@@ -91,7 +91,9 @@ export async function establishConnection(): Promise<void> {
   /* Get the connection object and retrieve the 
    version from the connection object. */
 
-  //Insert the Step 1 code from the tutorial here
+  connection = new Connection(clusterApiUrl("devnet"),"confirmed");
+  const version = await connection.getVersion();
+  console.log('Connection to cluster established:', version);
 }
 
 /**
@@ -100,13 +102,17 @@ export async function establishConnection(): Promise<void> {
 export async function establishPayer(): Promise<void> {
   
   //Step 2: Generate a keypair - this would be an account that pays for the calls to the program
-  
-  //Insert the Step 2 code from the tutorial here
-  
-  //Step 3: Requesting an airdrop
+  payer = Keypair.generate();
+  console.log("Public Key of Payer is:", payer.publicKey);
 
-   //Insert the Step 3 code from the tutorial here
-   
+  //Step 3: Requesting an airdrop
+  const sig = await connection.requestAirdrop(
+    payer.publicKey,
+    2 * LAMPORTS_PER_SOL,
+  );
+
+  await connection.confirmTransaction(sig);
+
   console.log(
     'Using account',
     payer.publicKey.toBase58(),
