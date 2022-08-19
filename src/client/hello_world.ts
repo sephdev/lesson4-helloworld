@@ -207,12 +207,19 @@ export async function sayHello(): Promise<void> {
   console.log('Saying hello to', greetedPubkey.toBase58());
   
   // STEP 4: Create an instruction to be sent to the program
-  
-  //Insert the Step 4 code from the tutorial here
+  const instruction = new TransactionInstruction({
+    keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
+    programId,
+    data: Buffer.alloc(0), // All instructions are hellos
+  });
 
   //STEP 5: Create a transaction to be sent to the blockchain containing the instruction
-  
-  //Insert the Step 5 code from the tutorial here
+  await sendAndConfirmTransaction(
+    connection,
+    new Transaction().add(instruction),
+    [payer],
+  );
+
 
 }
 
